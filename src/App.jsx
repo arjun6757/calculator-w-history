@@ -210,7 +210,7 @@ export default function App() {
               +
             </button>
             <button className="bg-transparent text-orange-500 p-2 text-xl rounded place-self-center">
-              <a href="https://github.com/arjun6757?tab=repositories">
+              <a href="https://github.com/arjun6757/calculator-w-history">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
