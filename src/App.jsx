@@ -1,10 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
+import { evaluate } from "mathjs";
 
 export default function App() {
   const [InputValue, setInputValue] = useState("0");
   const [history, setHistory] = useState([{}]);
-
+  const [answer, setAnswer] = useState("");
+  const [displayAnswer, setDisplayAnswer] = useState(true);
   const scrollRef = useRef();
+
+  useEffect(() => {
+    const equationStr = InputValue;
+    const isValid = /^[0-9+\-*%/().^\s]+$/.test(equationStr);
+    setDisplayAnswer(InputValue === answer ? false : true);
+    try {
+      if (isValid) {
+        const result = evaluate(equationStr);
+        setAnswer(result.toString());
+      }
+    } catch (error) {
+      setAnswer("NaN");
+    }
+  }, [InputValue]);
 
   /* this useEffect and useRef is used to scroll to the bottom each time history updates meaning
   even if a overflow happens it will automatically scroll to the bottom and show the latest history
@@ -17,22 +33,18 @@ export default function App() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
       //so it scrolls to the very bottom meaning scrolltop specifies the y axis and scrollheight here is the size of the full container
     }
-  }, [history]); //so whenever history changes it will run
+  }, [history, displayAnswer]); //so whenever history changes it will run
 
-  const performEquation = (e) => {
+  // code for history
+  const handleEqual = () => {
     const equationStr = InputValue;
-    const isValid = /^[0-9+\-*%/().\s]+$/.test(equationStr);
-    if (isValid) {
-      const result = new Function(`return ${equationStr}`)();
-      setInputValue(result.toString());
-      const previousCalculations = `${equationStr} = ${result}`;
-      // if(history.length === 5) {}
-      setHistory((p) => {
-        return [...p, { calc: previousCalculations }];
-      });
-    } else {
-      setInputValue("Invalid :(");
-    }
+    const equals = answer;
+    setInputValue(answer);
+
+    const previousCalculations = `${equationStr} = ${equals}`;
+    setHistory((p) => {
+      return [...p, { calc: previousCalculations }];
+    });
   };
 
   const handleInputChange = (e) => {
@@ -73,7 +85,7 @@ export default function App() {
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
-      <div className="bg-customBlack w-[400px] h-[600px] flex flex-col p-4 sm:rounded place-content-between">
+      <div className="bg-black w-full h-full sm:w-[400px] sm:h-[600px] flex flex-col p-4 sm:rounded-xl place-content-between">
         <div
           ref={scrollRef}
           style={{ scrollbarWidth: "none" }}
@@ -81,22 +93,28 @@ export default function App() {
         >
           {history.map((h, i) => {
             return (
-              <p key={i} className="text-white text-lg text-right">
+              <p key={i} className="text-[#888] text-lg text-right">
                 {h.calc}
               </p>
             );
           })}
         </div>
 
-        <div className="flex flex-col place-content-end p-4 gap-4">
-          <input
-            onChange={handleInputChange}
-            value={InputValue}
-            type="text"
-            className="text-white text-right bg-transparent border-b border-[#333] text-xl outline-none w-full p-2"
-          />
+        <div className="flex flex-col place-content-end gap-4">
+          <div className="gap-2 border-b border-[#333] p-2">
+            <input
+              onChange={handleInputChange}
+              value={InputValue}
+              type="text"
+              className="text-white text-right bg-transparent text-2xl outline-none w-full py-2"
+            />
 
-          <div className="grid grid-cols-4 gap-4">
+            {InputValue !== "0" && displayAnswer === true ? (
+              <p className="text-[#888] text-right text-xl py-2">= {answer}</p>
+            ) : null}
+          </div>
+
+          <div className="grid grid-cols-4 gap-4 ">
             <button
               onClick={handleSpecial}
               className="bg-transparent text-orange-500 p-2 text-xl rounded"
@@ -209,19 +227,12 @@ export default function App() {
             >
               +
             </button>
-            <button className="bg-transparent text-orange-500 p-2 text-xl rounded place-self-center">
-              <a href="https://github.com/arjun6757/calculator-w-history">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="bi bi-github"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8" />
-                </svg>
-              </a>
+            <button
+              onClick={handleChange}
+              className="bg-transparent text-orange-500 p-2 text-xl rounded place-self-center"
+              value={"^"}
+            >
+              ^
             </button>
             <button
               onClick={handleChange}
@@ -238,7 +249,7 @@ export default function App() {
               .
             </button>
             <button
-              onClick={performEquation}
+              onClick={handleEqual}
               className="bg-transparent text-orange-500 p-2 text-xl rounded"
               value={"="}
             >
