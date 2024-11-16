@@ -88,8 +88,7 @@ export default function App() {
       <div className="bg-black w-full h-full sm:w-[400px] sm:h-[600px] flex flex-col p-4 sm:rounded-xl place-content-between">
         <div
           ref={scrollRef}
-          style={{ scrollbarWidth: "none" }}
-          className="text-white text-lg gap-4 sm:gap-2 text-right h-1/4 overflow-scroll flex flex-col"
+          className="history-scrollbar text-white text-lg gap-4 sm:gap-2 text-right h-1/4 overflow-scroll flex flex-col"
         >
           {history.map((h, i) => {
             return (

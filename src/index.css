@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* for firefox */
+.history-scrollbar {
+    scrollbar-width: none;
+}
+
+/* for chrome, edge, safari */
+.history-scrollbar::-webkit-scrollbar {
+    display: none;
+}
