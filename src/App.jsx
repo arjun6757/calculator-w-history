@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { evaluate } from "mathjs";
+import { useLocalStorage } from "./LocalStorage";
 
 export default function App() {
-  const [InputValue, setInputValue] = useState("0");
-  const [history, setHistory] = useState([{}]);
-  const [answer, setAnswer] = useState("");
-  const [displayAnswer, setDisplayAnswer] = useState(true);
+  const [InputValue, setInputValue] = useLocalStorage("input", "0");
+  const [history, setHistory] = useLocalStorage("history", [{}]);
+  const [answer, setAnswer] = useLocalStorage("answer", "");
+  const [displayAnswer, setDisplayAnswer] = useLocalStorage("displayAnswer", true);
   const scrollRef = useRef();
 
   useEffect(() => {
