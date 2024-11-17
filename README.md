@@ -1,6 +1,6 @@
 # Description
 
-A simple calculator using React and TailwindCSS with Vite (for logic it is using MathJS)
+A simple calculator using React and TailwindCSS with Vite (for logic it is using MathJS)...now also supports persistent data
 
 # Installation
 
@@ -25,6 +25,7 @@ MIT
 # Contributing
 
 If you want to contribute to this project, please fork the repository and create a pull request.
+ 
+ <!-- using two asterisk for bold text -->
 
-
-if you like this project please give a star to the repository.
+*if you like this project please give a star to the repository.* 
